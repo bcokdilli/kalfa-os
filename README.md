@@ -204,10 +204,14 @@ Mevcut test seti `tests/` dizinindedir ve şunları doğrular:
 
 1. Paket içeriğini önizleyin.
    1. `npm run pack:preview`
-2. NPM hesabınızı doğrulayın.
-   1. `npm whoami`
-3. Yeni sürümü yayınlayın.
-   1. `npm publish --access public`
+2. npm tarafında Trusted Publisher tanımlayın.
+   1. npm paket ayarlarında `@komunite/kalfa-os` için GitHub repo `komunite/kalfa-os` bağlayın.
+   2. Workflow olarak `.github/workflows/npm-publish.yml` seçin.
+3. Sürümü artırın ve etiketi gönderin.
+   1. `npm version patch` (veya `minor` / `major`)
+   2. `git push --follow-tags`
+4. GitHub üzerinde Release oluşturun.
+   1. Workflow otomatik çalışır ve `npm publish --provenance --access public` ile yayın yapar.
 
 #### Hata ayıklama
 

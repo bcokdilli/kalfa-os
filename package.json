@@ -1,0 +1,44 @@
+{
+  "name": "kalfa-os",
+  "version": "1.0.0",
+  "description": "Kalfa OS - Claude Code için Türkçe profesyonel işletim sistemi",
+  "private": true,
+  "license": "MIT",
+  "author": "Komunite",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/komunite/kalfa-os.git"
+  },
+  "bugs": {
+    "url": "https://github.com/komunite/kalfa-os/issues"
+  },
+  "website": "https://www.komunite.com.tr",
+  "homepage": "https://github.com/komunite/kalfa-os#readme",
+  "keywords": [
+    "claude-code",
+    "automation",
+    "workflow",
+    "agents",
+    "skills"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "lint": "npm run lint:md",
+    "check": "npm run lint:md",
+    "lint:md": "remark . --frail --quiet --ignore-pattern .claude/backups/** --ignore-pattern .claude/logs/**",
+    "lint:md:fix": "remark . --output --quiet --ignore-pattern .claude/backups/** --ignore-pattern .claude/logs/**"
+  },
+  "remarkConfig": {
+    "plugins": [
+      "remark-gfm",
+      "remark-preset-lint-recommended"
+    ]
+  },
+  "devDependencies": {
+    "remark-cli": "^12.0.1",
+    "remark-gfm": "^4.0.1",
+    "remark-preset-lint-recommended": "^7.0.1"
+  }
+}

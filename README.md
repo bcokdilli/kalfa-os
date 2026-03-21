@@ -1,149 +1,174 @@
-# Kalfa OS
+## Kalfa OS
 
-Claude Code için Türkçe profesyonel işletim sistemi. Hafıza, uzman agent'lar, otomatik güvenlik kontrolleri ve 989 hazır skill ile Claude Code'u üretim kalitesinde bir iş ortağına dönüştürür.
+Bu araç, Claude Code ile daha düzenli ve üretim kalitesinde çalışma yapmanıza yardımcı olur. Bunu hafıza katmanları, uzman agent'lar, tekrar kullanılabilir skill'ler, komut ritüelleri ve güvenlik hook'ları ile yapar; böylece farklı projelerde tutarlı çıktı alabilirsiniz.
 
-## Ne İçerir
+Proje durumu: aktif olarak geliştiriliyor
 
-| Bileşen | Sayı | Açıklama |
-|---------|------|----------|
-| **Skill'ler** | 989 | 16 kategoride yapılandırılmış operasyonel prosedürler |
-| **Agent'lar** | 9 | Kalıcı hafızaya sahip uzman alt-agent'lar |
-| **Komutlar** | 21 | İş akışı ritüelleri ve araçlar |
-| **Hook'lar** | 9 | Deterministik güvenlik kontrolleri |
-| **Hafıza** | 6 katman | Oturumlar arası bağlam koruma |
+### Temel işlevler
 
-## Hızlı Başlangıç
+Kalfa OS; Claude Code kullanıcıları, bireysel üreticiler ve küçük ekipler için tasarlanmıştır. Amaç, kullanıcıların günlük çalışma akışını standartlaştırmak, kaliteyi korumak ve bağlam kaybını azaltmaktır.
 
-### 1. Ön Gereksinimler
+Kalfa OS, `.claude/commands` içindeki komutlar, `.claude/hooks` içindeki otomasyon kontrolleri ve `.claude/skills` içindeki operasyonel skill kütüphanesi ile çalışır. `memory.md`, `knowledge-base.md` ve görev dosyalarını okuyarak o anki bağlamı toplar ve bunu bir sonraki doğru adıma dönüştürür. Teknik detaylar için [Geliştirici dokümantasyonu](#geliştirici-dokümantasyonu) bölümüne bakın.
 
-- [Claude Code](https://claude.ai) kurulu ve ücretli Anthropic planı aktif
-- `jq` kurulu (`brew install jq` / `sudo apt-get install jq`)
+### Kalfa OS ne yapmaz
 
-### 2. Kurulum
+Bu araç, Claude Code'un yerine geçen bağımsız bir uygulama değildir. Kendi web arayüzü, backend servisi veya tek başına çalışan bir API ürünü sağlamaz.
 
-```bash
-# Repo'yu bilgisayarına indir
-git clone https://github.com/komunite/kalfa-os.git
+Ayrıca bu araç, harici servis hesaplarını sizin adınıza otomatik açmaz veya özel entegrasyonları sıfır eforla garanti etmez; gerekli erişim ve yapılandırmaları sizin sağlamanız gerekir.
 
-# Kendi projenin klasörüne gir
-cd /Users/seninkullanicin/projeler/benim-projem
+## Önkoşullar
 
-# Kalfa OS dosyalarını buraya kopyala
-cp -r ~/kalfa-os/.claude .
-cp ~/kalfa-os/CLAUDE.md .
-cp ~/kalfa-os/SETUP.md .
-cp ~/kalfa-os/Scratchpad.md .
-cp ~/kalfa-os/"Task Board.md" .
-cp -r ~/kalfa-os/"Daily Notes" .
-```
+Bu aracı kullanmadan önce şunlara aşina olmanız faydalıdır:
 
-### 3. Başlatma
+- Claude Code temel kullanım akışı
+- Git ve Markdown temelleri
 
-```bash
-claude
-```
+Sizde bulunması gerekenler:
 
-Claude Code açıldıktan sonra:
+- Claude Code kurulumu ve aktif Anthropic planı
+- `jq` kurulumu (hook doğrulamaları için)
+- Terminal erişimi olan bir işletim sistemi (macOS, Linux veya Windows)
+- Proje klasöründe dosya yazma yetkisi
 
-```
-/start
-```
+## Kalfa OS nasıl kullanılır
 
-Detaylı kurulum için `SETUP.md` dosyasına bakın.
+### Yeni bir oturum başlat
 
-## Sistem Mimarisi
+1. Proje kök dizininde Claude Code'u açın.
+   1. `.claude/` klasörünün mevcut olduğunu doğrulayın.
+   2. `CLAUDE.md` dosyasının bulunduğunu kontrol edin.
+   3. `Task Board.md` dosyasının erişilebilir olduğundan emin olun.
+2. `/start` komutunu çalıştırın.
+3. Günün önceliklerini netleştirip ilk işe başlayın.
 
-### 9 Uzman Agent
+### Gün içinde bağlamı sağlıklı tut
 
-| Agent | Görevi |
-|-------|--------|
-| **Denetçi** | Kalite kapısı. İşleri inceler, bilgiyi terfi ettirir |
-| **Çözümleyici** | Tıkandığında kök neden analizi yapar |
-| **Hata Tercümanı** | Anlaşılmaz hataları çözüme dönüştürür |
-| **Lastik Ördek** | Sokratik sorgulama ile gerçek problemi buldurur |
-| **PR Yazarı** | Diff'lerden PR açıklaması, commit mesajı yazar |
-| **Kapsam Bekçisi** | Konu sapmasını yakalar |
-| **Borç Takipçisi** | Teknik borcu izler ve önceliklendirir |
-| **Keşif Rehberi** | Yeni codebase'leri hızlıca öğrenir |
-| **Arkeolog** | Kodun neden var olduğunu ortaya çıkarır |
+1. Oturum ortasında `/sync` çalıştırın.
+2. Bağlam ağırlaştığında `/clear` kullanın.
+   1. Oturum özeti günlük nota yazılır.
+   2. Hafıza dosyası güncellenir.
+   3. Çalışma kaldığı yerden devam eder.
+3. Gün sonunda `/wrap-up` ile kapanış yapın.
 
-### 21 Komut
+### Kalite kontrollerini işlet
 
-| Komut | Ne Zaman |
-|-------|----------|
-| `/start` | Gün başında |
-| `/sync` | Gün ortasında bağlam tazeleme |
-| `/wrap-up` | Gün sonunda |
-| `/clear` | Görevler arası geçişte |
-| `/audit` | Önemli iş bittiğinde |
-| `/review` | Kod incelemesi |
-| `/unstick` | Tıkandığında |
-| `/onboard` | Yeni codebase tanımak için |
-| `/retro` | Sprint retrospektifi |
-| `/system-audit` | Altyapı denetimi |
+1. Bir iş kalemi bittiğinde `/audit` çalıştırın.
+2. Merge öncesi `/review` çalıştırın.
+   1. Kritik bulguları önceliklendirin.
+   2. Gerekli düzeltmeleri uygulayın.
+   3. Tekrar kontrol edin.
+3. Teslim veya devir için `/release` ve `/handoff` kullanın.
 
-Tam liste için `.claude/command-index.md` dosyasına bakın.
+### Skill kütüphanesinden faydalan
 
-### 16 Skill Kategorisi (989 Skill)
+1. `.claude/skills/INDEX.md` dosyasından ilgili skill'i bulun.
+2. Claude'a hedefinizi verip skill'i uygulatın.
+   1. Net amaç belirtin.
+   2. Kısıtları ve beklenen çıktıyı yazın.
+   3. Sonraki adımları görev panosuna ekleyin.
+3. Öğrenimleri not alıp tekrar kullanım için saklayın.
 
-Yapay Zeka ve Otomasyon, İçerik, Danışmanlık, Müşteri Başarısı, Tasarım, Yazılım Geliştirme, E-ticaret, E-posta Pazarlama, Finans, Pazarlama, Ürün Yönetimi, Kişisel Verimlilik, Satış, SEO, Sosyal Medya, Girişimcilik.
+## Sorun giderme
 
-Detaylar için `.claude/skills/INDEX.md` dosyasına bakın.
+Hook'lar çalışmıyor veya eksik davranıyor
 
-### 6 Katmanlı Hafıza
+- `jq --version` ile `jq` kurulumunu doğrulayın.
 
-1. `memory.md` — Aktif oturum bağlamı
-2. Agent hafızası — Agent başına kalıcı bilgi
-3. Bilgi tabanı — Sistem geneli öğrenilmiş kurallar
-4. Bilgi adaylıkları — Aday öğrenmeler hattı
-5. MCP bilgi grafi — Yapılandırılmış varlıklar
-6. Günlük notlar — Kronolojik oturum geçmişi
+`settings.json` kaynaklı hatalar alınıyor
 
-### 9 Güvenlik Hook'u
+- `.claude/settings.json` dosyasını `jq . .claude/settings.json` ile doğrulayın.
 
-- Tehlikeli shell komutlarını engeller
-- Dosyaları üzerine yazmadan önce yedekler
-- Eksik içeriği yakalar
-- Tüm değişiklikleri loglar
-- Oturum durumunu otomatik korur
+Uzun oturumlarda kalite düşüyor
 
-## Günlük İş Akışı
+- `/clear` komutunu çalıştırıp bağlamı yeniden yükleyin.
 
-```
-Sabah:         /start → çalış → /sync (görev değiştirirken)
-Öğleden sonra: çalış → /clear (bağlam ağırlaşırsa) → çalış
-Akşam:         /wrap-up
-```
+## Yardım alma ve issue bildirme
 
-## Dosya Yapısı
+- Hata ve geliştirme talepleri için issue açın: `https://github.com/komunite/kalfa-os/issues`
+- Genel bilgi ve destek için GitHub üzerinden iletişime geçin. Yanıt süresi, bakımcıların uygunluğuna göre değişir.
 
-```
-projeniz/
-├── .claude/
-│   ├── agents/          # 9 uzman agent tanımı
-│   ├── commands/        # 21 komut dosyası
-│   ├── hooks/           # 9 güvenlik hook'u
-│   ├── skills/          # 989 skill (16 kategori)
-│   ├── agent-memory/    # Agent başına kalıcı hafıza
-│   ├── logs/            # Denetim izi ve olay kaydı
-│   ├── backups/         # Otomatik yedekler
-│   ├── memory.md        # Aktif oturum bağlamı
-│   ├── knowledge-base.md    # Öğrenilmiş kurallar
-│   ├── command-index.md     # Komut katalogu
-│   └── settings.json        # Hook yapılandırması
-├── CLAUDE.md            # Ana sistem talimatları
-├── SETUP.md             # Kurulum rehberi
-├── Task Board.md        # Görev panosu
-├── Scratchpad.md        # Hızlı not defteri
-└── Daily Notes/         # Günlük notlar
-```
+## Geliştirici dokümantasyonu
 
-## Katkıda Bulunma
+### Teknik uygulama
 
-1. Repo'yu fork'la
-2. Değişikliklerini yap
-3. PR aç
+Kalfa OS; Claude Code komut dosyaları, shell hook'ları ve hafıza dosyaları üzerinde çalışan bir operasyon katmanıdır. Kritik kontroller, `.claude/hooks/*.sh` script'leri ile uygulanır; iş akışları ise `.claude/commands/*.md` üzerinden yönetilir.
+
+### Kod yapısı
+
+- `.claude/commands/` dizini günlük çalışma ritüellerini ve operasyon komutlarını içerir.
+- `.claude/hooks/` dizini güvenlik, loglama ve bütünlük denetimlerini içerir.
+- `.claude/agents/` dizini uzman agent tanımlarını içerir.
+- `.claude/skills/` dizini kategori bazlı skill kütüphanesini içerir.
+
+### Yerel geliştirme
+
+#### Ortam hazırlığı
+
+Geliştirme ortamını hazırlama:
+
+1. Depoyu klonlayın.
+   1. `git clone https://github.com/komunite/kalfa-os.git`
+   2. `cd kalfa-os`
+
+#### Kurulum
+
+Kurulum:
+
+1. Node bağımlılıklarını yükleyin.
+   1. `npm install`
+   2. `npm run lint:md` komutunun çalıştığını doğrulayın.
+
+#### Yapılandırma
+
+Yapılandırma:
+
+1. `.claude/settings.json` dosyasını proje ihtiyaçlarınıza göre düzenleyin.
+2. `memory.md`, `knowledge-base.md` ve `Task Board.md` dosyalarını proje bağlamıyla güncelleyin.
+
+#### Build ve test
+
+Yerelde çalıştırma:
+
+1. Bu repo bir uygulama build çıktısı üretmez; operasyon dosyası sağlar.
+   1. Hedef projenizde `claude` başlatın.
+   2. `/start`, `/sync`, `/wrap-up` akışlarını çalıştırın.
+
+Testleri çalıştırma:
+
+1. Markdown kontrollerini çalıştırın.
+   1. `npm run lint:md`
+   2. Gerekirse `npm run lint:md:fix`
+
+#### Hata ayıklama
+
+- `TAMLIK KAPISI` engeli alınıyor
+  - `TODO`, `TBD`, `FIXME` gibi yer tutucuları kaldırın ve formatı düzeltin.
+
+- Hook script çalışmıyor
+  - `.claude/hooks/*.sh` dosyalarının çalıştırılabilir izinlerini kontrol edin.
+
+## Nasıl katkıda bulunulur
+
+Kalfa OS bakımcıları katkıları memnuniyetle karşılar.
+
+- komut ve hook iyileştirmeleri
+- dokümantasyon, skill kalitesi ve örnek iyileştirmeleri
+
+### Katkı süreci
+
+Katkıdan önce topluluk beklentileri için [Code of Conduct](./CODE_OF_CONDUCT.md) dosyasını okuyun. Depodaki mevcut yapı ve yazım standartlarını takip edin.
+
+1. Fork alın ve branch açın.
+   1. `main` üzerinden yeni bir branch oluşturun.
+   2. Değişiklik kapsamını dar tutun.
+2. Değişiklik yapın ve doğrulayın.
+   1. `npm run lint:md` çalıştırın.
+   2. Açıklayıcı bir pull request açın.
+
+## Emeği geçenler
+
+Kalfa OS'un geliştirilmesine katkı veren Komünite ekibine ve tüm katkıcılara teşekkür ederiz.
 
 ## Lisans
 
-MIT
+Bu proje MIT lisansı ile lisanslanmıştır. Detaylar için [LICENSE](./LICENSE) dosyasına bakın.
